@@ -9,6 +9,7 @@ FONT_SIZE = 1
 FONT_THICKNESS = 1
 HANDEDNESS_TEXT_COLOR = (88, 205, 54) # vibrant green
 GESTURE_TEXT_COLOR = (0, 0, 255)
+IMAGE_FLIPPED = True
 
 def draw_landmarks_on_image(rgb_image, detection_result):
     """
@@ -51,8 +52,16 @@ def draw_landmarks_on_image(rgb_image, detection_result):
     text_x = int(min(x_coordinates) * width)
     text_y = int(min(y_coordinates) * height) - MARGIN
 
+    if IMAGE_FLIPPED:
+        if handedness[0].category_name == 'Left':
+            handedness_text = 'Right'
+        else:
+            handedness_text = 'Left'
+    else:
+        handedness_text = handedness[0].category_name
+
     # Draw handedness (left or right hand) on the image.
-    cv2.putText(annotated_image, f"{handedness[0].category_name}",
+    cv2.putText(annotated_image, f"{handedness_text}",
                 (text_x, text_y), cv2.FONT_HERSHEY_DUPLEX,
                 FONT_SIZE, HANDEDNESS_TEXT_COLOR, FONT_THICKNESS, cv2.LINE_AA)
     if gestures:
@@ -93,8 +102,8 @@ with GestureRecognizer.create_from_options(options) as recognizer:
         if not success:
             print("Ignoring empty camera frame.")
             continue
-        
-        frame = cv2.flip(frame, 1)
+        if IMAGE_FLIPPED:
+            frame = cv2.flip(frame, 1)
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
         frame_timestamp_ms = int(cv2.getTickCount() / cv2.getTickFrequency() * 1000)
