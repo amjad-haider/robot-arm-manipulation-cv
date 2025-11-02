@@ -149,23 +149,24 @@ class HandLandmarkPublisher(Node):
                         handedness = "Left" if handedness == "Right" else "Right"
                     gesture_name = gestures[0].category_name
                     gesture_str += f"{handedness}: {gesture_name}; "
-                self.waypoint.header.stamp = self.get_clock().now().to_msg()
-                self.waypoint.header.frame_id = 'camera_link'
 
-                hand_landmarks_centroid = gesture_recognition_result.hand_landmarks[i]
-                # These are the 7 landmarks from the example (palm base)
-                palm_landmark_indices = [0, 1, 2, 5, 9, 14, 17]
-                coords = np.array([
-                        [hand_landmarks_centroid[idx].x * width, hand_landmarks_centroid[idx].y * height] 
-                        for idx in palm_landmark_indices
-                    ])
-                    
-                # Calculate the average (mean)
-                centroid_2d = np.mean(coords, axis=0)
-                self.waypoint.pose.position.x = float(centroid_2d[0])
-                self.waypoint.pose.position.y = float(centroid_2d[1])
-                self.waypoint_publisher.publish(self.waypoint)
+        # Publish waypoints for every detected hand, regardless of gesture recognition
+        for i, hand_landmarks_centroid in enumerate(gesture_recognition_result.hand_landmarks):
+            self.waypoint.header.stamp = self.get_clock().now().to_msg()
+            self.waypoint.header.frame_id = 'camera_link'
 
+            # These are the 7 landmarks from the example (palm base)
+            palm_landmark_indices = [0, 1, 2, 5, 9, 14, 17]
+            coords = np.array([
+                    [hand_landmarks_centroid[idx].x * width, hand_landmarks_centroid[idx].y * height] 
+                    for idx in palm_landmark_indices
+                ])
+                
+            # Calculate the average (mean)
+            centroid_2d = np.mean(coords, axis=0)
+            self.waypoint.pose.position.x = float(centroid_2d[0])
+            self.waypoint.pose.position.y = float(centroid_2d[1])
+            self.waypoint_publisher.publish(self.waypoint)
         gesture_msg = String()
         gesture_msg.data = gesture_str
         self.gesture_publisher.publish(gesture_msg)
