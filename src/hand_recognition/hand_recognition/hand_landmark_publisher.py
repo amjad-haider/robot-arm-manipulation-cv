@@ -11,6 +11,16 @@ HANDEDNESS_TEXT_COLOR = (88, 205, 54) # vibrant green
 GESTURE_TEXT_COLOR = (0, 0, 255)
 
 def draw_landmarks_on_image(rgb_image, detection_result):
+    """
+    Annotates an RGB image with detected hand landmarks, handedness, and gesture information.
+
+    Parameters:
+        rgb_image (np.ndarray): The input RGB image to annotate.
+        detection_result: The result object containing hand landmarks, handedness, and gestures.
+
+    Returns:
+        np.ndarray: The annotated RGB image with hand landmarks, handedness, and gesture labels drawn.
+    """
   hand_landmarks_list = detection_result.hand_landmarks
   handedness_list = detection_result.handedness
   annotated_image = np.copy(rgb_image)
