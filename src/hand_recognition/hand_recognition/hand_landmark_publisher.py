@@ -94,4 +94,4 @@ with GestureRecognizer.create_from_options(options) as recognizer:
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
             break
-cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
