@@ -92,8 +92,10 @@ class HandLandmarkPublisher(Node):
         self.waypoint = PoseStamped() 
         self.header = Header()
         self.waypoint.header = self.header
-        self.waypoint.pose.orientation.x = 1.0
-        self.waypoint.pose.orientation.w = 0.0
+        self.waypoint.pose.orientation.x = 0.0
+        self.waypoint.pose.orientation.y = 0.0
+        self.waypoint.pose.orientation.z = 0.0
+        self.waypoint.pose.orientation.w = 1.0
         self.timer = self.create_timer(1.0/30.0, self.timer_callback)
         BaseOptions = mp.tasks.BaseOptions
         GestureRecognizer = mp.tasks.vision.GestureRecognizer
